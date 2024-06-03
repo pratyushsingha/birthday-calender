@@ -14,7 +14,7 @@ This is simple webapp that allows users to select a date and view birthdays that
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/your_username/your_repository.git
+git clone https://github.com/pratyushsingha/birthday-calender.git
 ```
 ```bash
 npm run dev
