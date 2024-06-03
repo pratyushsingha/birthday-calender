@@ -1,9 +1,8 @@
-// src/components/Calendar.tsx
 import { useEffect, useState } from 'react';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Box, Typography, Button, CircularProgress } from '@mui/material';
+import { Box, Typography, Button, CircularProgress, TextField } from '@mui/material';
 import { FaStar, FaRegStar } from 'react-icons/fa';
 import axios from 'axios';
 
@@ -12,13 +11,14 @@ interface Birthday {
     year: number;
 }
 
-const BASE_URL = "https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday"
+const BASE_URL = "https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday";
 
 const Calendar = () => {
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const [birthdays, setBirthdays] = useState<Birthday[]>([]);
     const [favorites, setFavorites] = useState<Birthday[]>([]);
     const [loading, setLoading] = useState(false);
+    const [searchQuery, setSearchQuery] = useState<string>('');
 
     const fetchBirthdays = async (date: Date) => {
         setLoading(true);
@@ -53,7 +53,7 @@ const Calendar = () => {
         }
     }, []);
 
-    const saveFavourites = (favorites: Birthday[]) => {
+    const saveFavorites = (favorites: Birthday[]) => {
         localStorage.setItem('favorites', JSON.stringify(favorites));
     };
 
@@ -63,13 +63,17 @@ const Calendar = () => {
                 fav => fav.text !== birthday.text || fav.year !== birthday.year
             );
             setFavorites(updatedFavorites);
-            saveFavourites(updatedFavorites);
+            saveFavorites(updatedFavorites);
         } else {
             const updatedFavorites = [...favorites, birthday];
             setFavorites(updatedFavorites);
-            saveFavourites(updatedFavorites);
+            saveFavorites(updatedFavorites);
         }
     };
+
+    const filteredBirthdays = birthdays.filter(birthday =>
+        birthday.text.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -81,12 +85,16 @@ const Calendar = () => {
                 />
                 {loading && <CircularProgress />}
                 <div className="grid gap-4 sm:grid-cols-2">
-
                     {selectedDate ? (
                         <Box className="flex-1 ml-4 mr-4">
                             <Typography variant="h6">Birthdays on {selectedDate.toDateString()}:</Typography>
+                            <TextField
+                                label="Search birthdays"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
                             <ul className="list-disc list-inside">
-                                {birthdays.map((birthday, index) => (
+                                {filteredBirthdays.map((birthday, index) => (
                                     <li key={index} className="flex items-center justify-between">
                                         <span>{birthday.text} ({birthday.year})</span>
                                         <Button onClick={() => toggleFavorite(birthday)}>
