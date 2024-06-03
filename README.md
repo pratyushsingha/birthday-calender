@@ -19,4 +19,4 @@ git clone https://github.com/your_username/your_repository.git
 ```bash
 npm run dev
 ```
-server is running at `http:localhost:5173`
+server is running at `http://localhost:5173`
