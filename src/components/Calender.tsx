@@ -24,8 +24,8 @@ const Calendar = () => {
         setLoading(true);
         try {
             setBirthdays([]);
-            let month = String(date.getMonth() + 1).padStart(2, '0');
-            let day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
             const response = await axios.get(`${BASE_URL}/births/${month}/${day}`);
             setBirthdays(response.data.births);
             setLoading(false);
